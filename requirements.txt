@@ -1,0 +1,9 @@
+pandas
+geopandas
+shapely
+pyproj
+scikit-learn
+matplotlib
+openpyxl
+numpy
+shap
