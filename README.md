@@ -9,6 +9,7 @@ AI와 함께하는 교통문제 해결을 위한 데이터 분석 공모전(재�
 - 6가지 정의 중 5개 이상에서 반복 선정된 **핵심 17곳**: 동두천·포천·연천·가평·양주·여주(경기), 진천·음성·증평·옥천·영동(충북), 횡성·평창(강원), 칠곡·고령·영덕(경북), 금산(충남)
 - 핵심 지역 승용차 통근 비율 62.2%(나머지 50.2%), 대중교통 7.8%(나머지 22.2%), 대중교통 이용자의 통근시간이 승용차 이용자보다 평균 16.8분 김(나머지 9.5분)
 - 2015→2020 승용차 통근 비율 52.5%→62.2%, 17곳 모두 상승, 대중교통은 제자리
+- 공급 검증: 경기도 핵심 지역의 평일 평균 배차간격 중앙값 56.5분(나머지 40.9분, 2018), 배차간격과 승용차 통근 비율 순위상관 0.67~0.76
 - 랜덤포레스트(교차검증 R² 0.77) + SHAP: 핵심 17곳은 소득이 승용차 비율을 낮추는 방향(−1.3%p)인데도 산업단지 통근·낮은 밀도·서울과의 거리·통근시간 격차가 끌어올림 → '형편이 아니라 구조'
 - 대형버스(약 723 gCO₂/km)는 1대에 평균 4.2명 이상 타야 승용차(173 gCO₂/인·km)보다 배출이 적음 → 수요가 적은 지역은 소형·친환경 수요응답형 교통(DRT)이어야 격차와 탄소를 함께 줄임
 
@@ -23,7 +24,9 @@ code/
   05_robustness.py      레드팀 점검(분모 효과, 가중치·기준 민감도, 통근차량, 소득 지표 대표성)
   06_figures.py         보고서용 그림 2·3
   07_ml_shap.py         랜덤포레스트 + SHAP (5겹·시도별 교차검증, 변수 구성 4종 강건성)
-  08_infographic.py     보고서 '분석결과 이미지'용 요약 인포그래픽(그림 5)
+  08_infographic.py     보고서 '분석결과 이미지'용 요약 인포그래픽
+  09_headway_validation.py  공급 측 검증: 한국교통안전공단 시군별 배차간격(경기 2018·2019)과 비교
+  10_print_figures.py   한글 보고서용 인쇄 크기 그림 3장
 tools/
   md_to_docx.py         보고서 원고(.md)를 Word로 변환
   fill_hwp.py           공모전 한글 양식에 원고를 채워 넣음 (한컴오피스 필요, 양식 파일은 미포함)
@@ -42,6 +45,7 @@ output/tables/          표
 | `국세청_시군구별_근로소득_주소지_2020.csv` | 시·군·구별 근로소득 연말정산 신고현황(주소지), 2020 | [KOSIS DT_133001N_4215](https://kosis.kr/statHtml/statHtml.do?orgId=133&tblId=DT_133001N_4215) |
 | `국토부_전국버스정류장위치_20251031.csv` | 국토교통부_전국 버스정류장 위치정보 | [공공데이터포털 15067528](https://www.data.go.kr/data/15067528/fileData.do) |
 | `국가철도공단_전체도시철도역사정보_20260630.xlsx` | 국가철도공단_도시광역철도_역사정보 | [공공데이터포털 15093755](https://www.data.go.kr/data/15093755/fileData.do) |
+| `TS_경기_시군별_배차간격_2018_2019.json` | 한국교통안전공단 대중교통 운행지표(배차간격, 시군구) — 웹 조회값을 옮겨 적은 파일(저장소에 포함) | [대중교통현황정보](https://www.kotsa.or.kr/ptc/inside_run.do) |
 | `boundary/HangJeongDong_ver20201001.geojson` | 행정동 경계(2020.10.1) | [admdongkor](https://github.com/vuski/admdongkor) (CC BY 4.0) |
 
 ## 실행
@@ -56,6 +60,8 @@ python code/05_robustness.py
 python code/06_figures.py
 python code/07_ml_shap.py
 python code/08_infographic.py
+python code/09_headway_validation.py
+python code/10_print_figures.py
 ```
 
 Windows에서 한글 출력이 깨지면 `set PYTHONIOENCODING=utf-8` 후 실행하세요. 그림 글꼴은 맑은 고딕(Malgun Gothic)을 사용합니다.
