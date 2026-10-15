@@ -83,7 +83,7 @@ def fig2():
     ax.barh(core.index, core.values, color=[RED if v > 0 else BLUE for v in core.values])
     ax.axvline(0, color="grey", lw=0.5)
     ax.set_title("핵심 17곳 기여 방향")
-    ax.set_xlabel("평균 SHAP (%p, +는 의존을 올림)")
+    ax.set_xlabel("평균 SHAP (%p, +는 예측값을 올림)")
     for a in axes:
         a.spines[["top", "right"]].set_visible(False)
     fig.tight_layout(pad=0.3, w_pad=0.8)
@@ -103,7 +103,7 @@ def fig3():
     ax.text(0.5, 1040, "이 영역의 차량은 배출 증가", color="#7f2a1f", fontsize=5.6)
     ax.set_xlim(0, 16)
     ax.set_ylim(0, 1200)
-    ax.set_xlabel("늘린 차량 1대당 새 승객 (명)")
+    ax.set_xlabel("늘린 차량의 평균 재차인원 (새 승객, 명)")
     ax.set_ylabel("차량 배출 (gCO₂/km)")
     ax.legend(loc="center right", frameon=False, fontsize=5.2, bbox_to_anchor=(1.0, 0.42))
     ax.spines[["top", "right"]].set_visible(False)

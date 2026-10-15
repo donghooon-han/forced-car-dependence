@@ -85,7 +85,7 @@ def main():
                "승용차통근자_대비_전환율", "승용차_감축_t", "버스_추가배출_t", "순감축_t"]]
           .round(3).to_string(index=False))
 
-    # 현재 상태 비교표 (핵심 / 의심 / 나머지)
+    # 현재 상태 비교표 (핵심 / 의심 / 나머지 194 / 나머지 212)
     km = d["time_car"] / 60 * SPEED
     d["t_per_driver"] = 2 * WORKDAYS * km * EF_CAR / 1e6
     d["group"] = "나머지"
@@ -106,6 +106,8 @@ def main():
             "전국_승용차통근배출_비중": (x["t_per_driver"] * x["n_car"]).sum() / (d["t_per_driver"] * d["n_car"]).sum(),
         })
     comp = d.groupby("group").apply(summarize, include_groups=False)
+    # 보고서 비교표 기준: 핵심 17곳 vs 나머지 212곳(사분면 의심 지역 포함)
+    comp.loc["나머지(212)"] = summarize(d[~d["core"]])
     print("\n집단 비교")
     print(comp.round(3).to_string())
     comp.to_csv(TAB / "target_vs_rest.csv", encoding="utf-8-sig")
