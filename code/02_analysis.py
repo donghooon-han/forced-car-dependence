@@ -42,7 +42,10 @@ def zscore(s: pd.Series) -> pd.Series:
 
 
 def main():
-    g = gpd.read_file(PROC / "sgg_2020.geojson")
+    src = PROC / "sgg_2020.geojson"
+    if not src.exists():  # 저장소에는 용량 때문에 sgg_2020.geojson.zip 으로 들어 있다
+        src = f"zip://{(PROC / 'sgg_2020.geojson.zip').as_posix()}!sgg_2020.geojson"
+    g = gpd.read_file(src)
     g["sido"] = g["key"].str.split("|").str[0]
     g["name"] = g["key"].str.split("|").str[1]
     g["log_income"] = np.log(g["income_per_worker"])

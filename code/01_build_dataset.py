@@ -175,6 +175,8 @@ def count_points(points: gpd.GeoDataFrame, sgg: gpd.GeoDataFrame, col: str) -> p
 
 
 def load_bus(path: Path) -> gpd.GeoDataFrame:
+    if not path.exists():  # 저장소에는 용량 때문에 같은 이름의 .zip으로 들어 있다
+        path = path.with_suffix(".zip")
     b = pd.read_csv(path, encoding="cp949", dtype=str)
     b = b.rename(columns={"위도": "lat", "경도": "lon", "도시명": "city"})
     b["lat"] = pd.to_numeric(b["lat"], errors="coerce")

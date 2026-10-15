@@ -13,7 +13,22 @@ AI와 함께하는 교통문제 해결을 위한 데이터 분석 공모전(재�
 - 현장 확인: 진천군 농어촌버스 시간표(2025.11)에서 진천읍→산수산업단지 직행은 하루 4번(06:20·08:20·11:50·15:00)
 - 탄소 시나리오(핵심 17곳, 버스 차량·km 2배, 증가율 = 2^탄력성 − 1): 승용차 통근자 3천\~9,600명 전환, 승용차 배출 연 3,700\~11,800 t 감소(승용차 쪽만 센 값). 현재 버스 차량·km 자료가 없어 '운행 2배'의 버스 배출은 계산하지 않고, 늘린 차량의 손익분기 재차인원(대형버스 4.2명, 원래 운전자 50%면 8.4명)을 따로 제시
 - 랜덤포레스트(무작위 5겹 교차검증 R² 0.77, 시도 단위 0.49) + SHAP: 핵심 17곳에서 소득은 승용차 비율 예측값을 낮추는 쪽(−1.3%p)으로, 산업단지 통근·낮은 통근자 밀도·서울과의 거리·통근시간 격차는 높이는 쪽으로 기여(예측 기여도이며 인과 효과가 아님)
-- 대형버스(약 723 gCO₂/km)는 원래 운전자가 평균 4.2명 이상 타야 승용차(173 gCO₂/인·km) 감소분과 같아짐. 새 승객 중 원래 운전자를 50%로 보면 늘린 버스의 평균 재차인원 8.4명이 손익분기(같은 이동거리, 빈 차 운행 제외 가정) → 최소 이동 서비스를 보장한 뒤 지역 여건에 맞는 수단(통근 셔틀·소형 DRT·역 연계 버스)을 고름
+- 대형버스(약 723 gCO₂/km)는 원래 운전자가 평균 4.2명 이상 타야 승용차(173 gCO₂/인·km) 감소분과 같아짐. 새 승객 중 원래 운전자를 50%로 보면 늘린 버스의 평균 재차인원 8.4명이 손익분기(같은 이동거리, 빈 차 운행 제외 가정) → 최소 이동 서비스를 보장한 뒤 지역 여건에 맞는 수단(출퇴근 셔틀·소형 DRT·열차 연계)을 고름
+
+## 보고서 숫자 재현 확인
+
+`python run_all.py` 를 실행한 뒤, 아래 파일에서 보고서의 숫자를 확인할 수 있습니다.
+
+| 보고서 숫자 | 만드는 코드 | 확인할 파일 |
+|---|---|---|
+| 핵심 17곳 목록, 6가지 기준별 선정 결과 | `02_analysis.py`, `05_robustness.py` | `data/processed/sgg_2020_analyzed.csv`(core 열), `output/tables/robust_core_regions.csv` |
+| 승용차 통근 62.2% vs 50.6%, 대중교통 7.8% vs 21.7%, 격차 16.8분 vs 9.7분, 소득 3,130만 vs 3,599만 원, 운전자 1인당 1.1t vs 1.4t | `03_carbon.py` | `output/tables/target_vs_rest.csv`('핵심', '나머지(212)' 행) |
+| 2015→2020 승용차 52.5%→62.2%, 상승폭 중앙값 8.7%p·6.3%p·8.6%p | `04_trend.py` | `output/tables/trend_2015_2020.csv` |
+| 랜덤포레스트 R² 0.77(무작위)·0.49(시도 단위), 선형회귀 0.37 | `07_ml_shap.py` | `output/tables/ml_performance.csv` |
+| 핵심 17곳 SHAP: 소득 −1.3%p, 산업단지 통근 +3.1%p, 밀도 +2.8%p 등 | `07_ml_shap.py` | `output/tables/ml_shap_core.csv` |
+| 배차간격 중앙값 56.5분 vs 40.9분, 순위상관 0.67\~0.76, 편순위상관 0.37\~0.50 | `09_headway_validation.py` | `output/tables/headway_validation.csv` |
+| 승용차 전환 3천\~9,600명, 승용차 배출 감소 3,700\~11,800 t | `03_carbon.py` | `output/tables/carbon_scenarios.csv`('배차 2배' 행의 승용차 감축 열) |
+| 손익분기 재차인원 4.2명, 원래 운전자 50%면 8.4명 | `03_carbon.py` | 실행 화면 출력, `output/tables/carbon_break_even.csv`, 그림 3 |
 
 ## 폴더 구조
 
@@ -29,16 +44,19 @@ code/
   08_infographic.py     보고서 '분석결과 이미지'용 요약 인포그래픽
   09_headway_validation.py  공급 측 검증: 한국교통안전공단 시군별 배차간격(경기 2018·2019)과 비교, 밀도 통제 편순위상관
   10_print_figures.py   한글 보고서용 인쇄 크기 그림 3장
+run_all.py              02~10번 전체 실행
 tools/
   md_to_docx.py         보고서 원고(.md)를 Word로 변환
   fill_hwp.py           공모전 한글 양식에 원고를 채워 넣음 (한컴오피스 필요, 양식 파일은 미포함)
-data/raw/               원자료 (아래 '자료 받기' 참고, 저장소에는 올리지 않음)
+data/raw/               원자료 (행정동 경계 파일만 용량 때문에 제외, 아래 '자료' 참고)
 data/processed/         결합·분석 결과
 output/figures/         그림
 output/tables/          표
 ```
 
-## 자료 받기 (data/raw 에 저장)
+## 자료 (data/raw)
+
+행정동 경계 파일을 뺀 원자료는 모두 저장소에 들어 있습니다. 경계 파일(34.8MB)은 GitHub 업로드 한도를 넘어 넣지 않았고, 대신 이를 시군구로 합친 지도 파일을 넣었습니다. 용량 때문에 버스정류장 자료와 시군구 지도는 압축 파일(`국토부_전국버스정류장위치_20251031.zip`, `data/processed/sgg_2020.geojson.zip`)로 들어 있으며, 코드가 압축을 풀지 않고 바로 읽습니다. 따라서 `02`~`10`은 저장소만 받아 바로 실행할 수 있고, `01`을 다시 돌릴 때만 아래 표의 경계 파일을 받으면 됩니다.
 
 | 파일명 (저장 이름) | 자료 | 받는 곳 |
 |---|---|---|
@@ -54,26 +72,17 @@ output/tables/          표
 
 ```bash
 pip install -r requirements.txt
-python code/01_build_dataset.py
-python code/02_analysis.py
-python code/03_carbon.py
-python code/04_trend.py
-python code/05_robustness.py
-python code/06_figures.py
-python code/07_ml_shap.py
-python code/08_infographic.py
-python code/09_headway_validation.py
-python code/10_print_figures.py
+python run_all.py
 ```
 
-Windows에서 한글 출력이 깨지면 `set PYTHONIOENCODING=utf-8` 후 실행하세요. 그림 글꼴은 맑은 고딕(Malgun Gothic)을 사용합니다.
+`run_all.py`가 `02`~`10`번을 차례로 실행합니다(약 1~2분). 하나씩 돌리려면 `python code/02_analysis.py`처럼 번호 순서대로 실행하면 됩니다. 원자료 결합(`01`)부터 다시 하려면 행정동 경계 파일을 받은 뒤 `python run_all.py --with-01`을 실행하세요. 그림 글꼴은 맑은 고딕(Malgun Gothic)을 사용합니다.
 
 ## 주요 가정과 출처
 
 - 승용차 173, 버스 55 gCO₂/인·km: 한국철도기술연구원(2010), 권영민·김수지·변지혜(2020, 한국ITS학회논문지 19(1)) 재인용
 - 대형버스 약 723 gCO₂/km: 국립환경과학원 NIER-06 시험모드(서울시 환경분야 누리집)
 - 버스 차량·km 탄력성 단기 0.38, 장기 0.66: Paulley 외(2006), Transport Policy 13(4), 표 4
-- 새 승객 중 원래 운전자 비율 기준 50%·보수 30%: LA Metro(2016) Expo Line·Gold Line 연장 구간 신규 이용자 조사(44\~66%)보다 낮게 설정
+- 새 승객 중 원래 운전자 비율 기준 50%·보수 30%: LA Metro(2016) Expo Line·Gold Line 연장 구간 신규 이용자 조사(44\~66%)를 참고한 가정(국내 실측값 아님)
 - 승용차 평균 통근속도 30km/h, 연 250일 통근: 분석 가정(코드에서 변경 가능)
 
 ## 한계
