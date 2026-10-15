@@ -9,6 +9,7 @@
   - 2020~2022년은 값이 비어 있어 코로나 직전인 2018·2019년을 쓴다
   - 두 해의 수준 차이가 커서(집계 방식 변화로 보임) 연도별로 따로 비교한다
 평일(월~금) 평균 배차간격(분)을 쓰고, 0 또는 빈 값은 결측 처리한다.
+도시·농촌 차이가 섞일 수 있으므로 통근자 밀도(로그)를 통제한 편순위상관도 함께 낸다.
 """
 import json
 from pathlib import Path
@@ -39,11 +40,21 @@ def load_headway() -> pd.DataFrame:
     return pd.DataFrame(rows).pivot(index="name", columns="year", values="headway_weekday")
 
 
+def partial_spearman(x, y, z):
+    """z(통제변수)의 순위를 뺀 뒤 x·y 순위 잔차끼리의 상관"""
+    rx, ry, rz = (pd.Series(v).rank().to_numpy() for v in (x, y, z))
+    A = np.column_stack([np.ones_like(rz), rz])
+    ex = rx - A @ np.linalg.lstsq(A, rx, rcond=None)[0]
+    ey = ry - A @ np.linalg.lstsq(A, ry, rcond=None)[0]
+    return float(np.corrcoef(ex, ey)[0, 1])
+
+
 def main():
     h = load_headway()
     d = pd.read_csv(PROC / "sgg_2020_analyzed.csv")
     d = d[d["key"].str.startswith("경기|")].copy()
     d["name"] = d["key"].str.split("|").str[1]
+    d["log_density"] = np.log(d["commuters"] / d["area_km2"])
     m = d.set_index("name").join(h)
 
     rows = []
@@ -57,6 +68,7 @@ def main():
             "순위상관_승용차비율": x[y].corr(x["car_share"], method="spearman"),
             "순위상관_대중교통비율": x[y].corr(x["transit_share"], method="spearman"),
             "순위상관_의존지수": x[y].corr(x["fcd_index"], method="spearman"),
+            "편순위상관_승용차비율_밀도통제": partial_spearman(x[y], x["car_share"], x["log_density"]),
         })
     res = pd.DataFrame(rows)
     print(res.round(2).to_string(index=False))

@@ -65,8 +65,8 @@ def main():
          f"대중교통 {core['대중교통비율']*100:.1f}% vs {rest['대중교통비율']*100:.1f}%", RED)
     card(fig, x0 + w + 0.015, 0.53, w, h, f"+{tr['승용차_변화_%p(중앙값)']:.1f}%p",
          "2015→2020 승용차 비율\n지역별 상승폭 중앙값\n17곳 모두 상승", RED)
-    card(fig, x0, 0.16, w, h, f"소득 {inc:+.1f}%p",
-         f"모형 예측 기여도(SHAP)\n소득은 예측을 낮추고\n지역 여건이 +{struct:.1f}%p", BLUE)
+    card(fig, x0, 0.16, w, h, f"{inc:+.1f}%p",
+         f"소득 변수의 예측 기여(SHAP)\n지역 여건 요인은\n합계 +{struct:.1f}%p", BLUE)
     card(fig, x0 + w + 0.015, 0.16, w, h, "8.4명",
          "늘린 버스 평균 재차인원\n손익분기(새 승객 중\n원래 운전자 50% 가정)", BLUE)
 
@@ -76,7 +76,7 @@ def main():
                                 fc=DARK, ec="none", transform=ax.transAxes))
     ax.text(0.015, 0.5, "정책\n제안", fontsize=7.5, fontweight="bold", color="white", va="center",
             transform=ax.transAxes)
-    props = ["① 투자·보조금에\n의존 지수 반영", "② 여건별 수단 선택\n(셔틀·DRT·역 연계)",
+    props = ["① 투자·보조금에\n의존 지수 반영", "② 여건별 수단 선택\n(셔틀·DRT·열차 연계)",
              "③ 최소 서비스 보장 후\n탄소 점검으로 수단 선택", "④ 2025 센서스로\n지수 갱신·점검"]
     for i, t in enumerate(props):
         ax.text(0.10 + i * 0.225, 0.5, t, fontsize=6.6, color="white", va="center", transform=ax.transAxes,
