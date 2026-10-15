@@ -50,6 +50,10 @@ def partial_spearman(x, y, z):
 
 
 def main():
+    if not RAW.exists():
+        # 공단 저작권정책상 조회값을 저장소에 다시 올리지 않았다. README '데이터 이용조건' 참고
+        print(f"[건너뜀] {RAW.name} 이 없습니다. README의 '배차간격 자료 만들기'를 따라 만든 뒤 다시 실행하세요.")
+        return
     h = load_headway()
     d = pd.read_csv(PROC / "sgg_2020_analyzed.csv")
     d = d[d["key"].str.startswith("경기|")].copy()
