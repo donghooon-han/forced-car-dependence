@@ -68,7 +68,7 @@ def main():
     card(fig, x0, 0.16, w, h, f"{inc:+.1f}%p",
          f"소득 변수의 예측 기여(SHAP)\n지역 여건 요인은\n합계 +{struct:.1f}%p", BLUE)
     card(fig, x0 + w + 0.015, 0.16, w, h, "8.4명",
-         "늘린 버스 평균 재차인원\n손익분기(새 승객 중\n원래 운전자 50% 가정)", BLUE)
+         "늘린 버스 평균 재차인원\n손익분기 예시(원래\n운전자 50% 가정)", BLUE)
 
     ax = fig.add_axes([0.03, 0.015, 0.94, 0.12])
     ax.set_axis_off()

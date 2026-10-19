@@ -165,7 +165,7 @@ def main():
             ax.annotate(r["name"], (r["income_per_worker"], r["car_share"] * 100), fontsize=7,
                         xytext=(3, 2), textcoords="offset points")
         ax.set_xlim(2500, 5200)
-        ax.set_xlabel("1인당 근로소득 (만원, 2020)  ※ 5,200만원 초과 일부 구 생략")
+        ax.set_xlabel("근로소득 신고자 1인당 총급여 (만원, 2020)  ※ 5,200만원 초과 일부 구 생략")
         ax.set_ylabel("승용차 통근 비율 (%)")
         ax.set_title("소득 대비 승용차 의존 (점 크기: 대중교통-승용차 통근시간 차이)", fontsize=11)
         ax.legend(loc="lower right", fontsize=7)

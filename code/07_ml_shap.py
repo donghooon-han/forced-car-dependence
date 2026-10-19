@@ -36,7 +36,7 @@ SEED = 42
 SEOUL_CITY_HALL = Point(126.9780, 37.5665)
 
 FEATURES = {
-    "log_income": "1인당 근로소득",
+    "log_income": "근로소득(신고자 1인당)",
     "time_diff": "통근시간 격차",
     "has_rail": "철도역 유무",
     "log_density": "통근자 밀도",
